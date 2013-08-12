@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bootstrap 101 Template</title>
+    <title>Scripted - Javascript Timeline Library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet" media="screen">
@@ -9,14 +9,59 @@
         <!--link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script-->
         <style type="text/css" rel="stylesheet">
-          #test {
-            width: 200px;
-            height: 200px;
+          #scriptedA .col-lg-4 {
             opacity: 0;
-            background-color: green;
+            height: 180px;
+            
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: all 1s ease-in-out;
           }
           
-          #test.show {
+          #scriptedA .col-lg-4.show{
+            opacity: 1;
+          }
+          #scriptedA .col-lg-4.highlight{
+            background-color: #FFFF99;
+          }
+          
+          #hero-row {
+            padding: 24px 0;
+            
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: all 1s ease-in-out;
+          }
+          
+          #hero-row.highlight {
+            background-color: #FFFF99;
+          }
+          
+          #scriptedA4 {
+            opacity: 0;
+            
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: all 1s ease-in-out;
+          }
+          
+          #scriptedA4.show {
+            opacity: 1;
+          }
+          
+          #content-row {
+            opacity: 0;
+            
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: all 1s ease-in-out;
+          }
+          
+          #content-row.show {
             opacity: 1;
           }
         </style>
@@ -28,60 +73,145 @@
         <![endif]-->
 
         <div class="container">
-          <p>Hello world! This is HTML5 Boilerplate.</p>
-          <div id="test"><h1>This is a test.</h1></div>
+          <div class="row" id="scriptedA">
+            <div id="scriptedA1" class="col-lg-4">
+              <h1>Scripted</h1>
+              <p>Javascript library for timed actions.</p>
+            </div>
+            <div id="scriptedA2" class="col-lg-4">
+              <h2>Works with jQuery or Zepto.</h2>
+              <p>Compatible with all browsers. Provides Javascript based state changes and plays well with CSS3.</p>
+            </div>
+            <div id="scriptedA3" class="col-lg-4">
+              <h2>Lightweight and flexible.</h2>
+              <p>Easy syntax, plenty of options. Multiple Scripted timelines can be used at once.</p>
+            </div>
+          </div>
+          <div id="hero-row" class="row">
+            <div id="scriptedA4" class="col-lg-6 col-lg-offset-3">
+              <p class="lead"><em>Scripted is designed to bridge the gap between CSS3 animations and cross browser compatible state changes. Rather than relying on keyframes in CSS, the Scripted library is used to create cuepoint actions on a timeline.</em></p>
+              <p><button type="button" class="btn btn-lg btn-block"><a href="#">Try it now.</a></button></p>
+            </div>
+          </div>
+          <div id="content-row" class="row">
+            <div class="col-lg-4">
+              <h3>Getting Started:</h3>
+              <p>All you need is the Scripted.js file. Include it in your page, order is not necessary, but be sure not to call it before jQuery or Zepto are ready.</p>
+              <p>
+                <pre>
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/Scripted.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; &gt;
+  var S = new Scripted();
+  
+  S.setupTimer(fps, totalTimeInSeconds, shouldRepeat);
+&lt;/script&gt;
+                </pre>
+              </p>
+            </div>
+            <div class="col-lg-4">
+              <h3>Adding A Script Using The API:</h3>
+              <p>The .using() .at() and .every() methods may be used to create a script. If you don't pass in constructor arguments, be sure to call setupTimer(fps, totalTimeInSeconds) before starting the timer.</p>
+              <p><pre>
+// 60 FPS, 5 Second long timeline
+var S = new Scripted(60, 5);
+S.using("#element1")
+  .at("60 addClass show")
+  .at("120 addClass highlight")
+  .at("300 removeClass show");
+  
+S.using("#element2")
+  .at("300 addClass show");
+  
+S.startTimer();
+              </pre></p>
+            </div>
+            <div class="col-lg-4">
+              <h3>Adding A JSON Script Using LoadScript:</h3>
+              <p>It's possible to prepare JSON scripts in another file and pass them into the Scripted object.</p>
+              <p><pre>
+var S = new Scripted();
+
+var script = {
+  "options": {"fps": 60, "totalTimeInSeconds": 4, "shouldRepeat": true},
+  "actions": [
+    {
+      "using": "#element1",
+      "at": [
+        "60 addClass highlight",
+        "120 removeClass highlight"
+      ]
+    }
+  ]
+}
+
+S.loadScript(script);
+S.startTimer();
+              </pre></p>
+            </div>
+          </div>
+          <footer>
+            <p>Copyright 2013 Miles Ryan</p>
+          </footer>
+        </div>
+        <div id="tile-background" class="background">
+          
         </div>
         
         <script src="js/lib/jQuery.js"></script>
         <script src="js/lib/bootstrap.js"></script>
         <script src="js/Scripted.js"></script>
         <script type="text/javascript">
-          var S;
+          var SA, SB, SC;
           $(document).ready(function(){
 
-            S = new Scripted();
-            
-            var script = {
-              "options": {"fps":60, "totalTimeInSeconds": 4, "shouldRepeat": true},
+            SA = new Scripted(60, 5);
+            scriptA = {
               "actions": [
                {  
-                "using": "#test",
+                "using": "#scriptedA1",
                 "at": [
                   "60 addClass show",
-                  "60 addClass black",
-                  "120 removeClass show"
+                  "180 addClass highlight",
+                ]
+               },
+               {  
+                "using": "#scriptedA2",
+                "at": [
+                  "120 addClass show"
+                ]
+               },
+               {  
+                "using": "#scriptedA3",
+                "at": [
+                  "180 addClass show"
+                ]
+               },
+               {  
+                "using": "#scriptedA4",
+                "at": [
+                  "240 addClass show"
+                ]
+               },
+               {  
+                "using": "#hero-row",
+                "at": [
+                  "180 addClass highlight"
+                ]
+               },
+               {  
+                "using": "#content-row",
+                "at": [
+                  "180 addClass show"
                 ]
                }
               ]
             };
-            
-            S.loadScript(script);
-            
-            /*
-            S.using('#test')
-              .at('60 addClass show')
-              .at('60 addClass black')
-              .at('120 removeClass show');
-            */
-           
-            S.using(window)
-              .at('60 callFunction helloWorld');
-              
-            S.using(Test)
-              .at('120 callFunction hello');
-              
-            S.startTimer();
+            SA.loadScript(scriptA);
+
+            SA.startTimer();  
           });
           
-          function helloWorld(currentFrame) {
-            console.log("Hello World", currentFrame);
-          }
-          
-          var Test = {
-            hello: function(currentFrame) {
-              console.log("hello there", currentFrame);
-            }
-          }
         </script>
     </body>
 </html>
