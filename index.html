@@ -9,6 +9,13 @@
         <!--link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script-->
         <style type="text/css" rel="stylesheet">
+          #main {
+            position: absolute;
+            z-index: 20;
+            width: 100%;
+            height: 100%;  
+          }
+          
           #scriptedA .col-lg-4 {
             opacity: 0;
             height: 180px;
@@ -64,6 +71,26 @@
           #content-row.show {
             opacity: 1;
           }
+          
+          #tile-background {
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+          }
+          
+          #tile-background .square {
+            background-color: white;
+            
+            -webkit-transition: all 5s ease-in-out;
+            -moz-transition: all 5s ease-in-out;
+            -o-transition: all 5s ease-in-out;
+            transition: all 5s ease-in-out;
+          }
+          
+          #tile-background .square.show {
+            background-color: #EFEFEF;
+          }
         </style>
     </head>
     
@@ -72,7 +99,8 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div class="container">
+        <div id="main">
+          <div class="container">
           <div class="row" id="scriptedA">
             <div id="scriptedA1" class="col-lg-4">
               <h1>Scripted</h1>
@@ -90,7 +118,7 @@
           <div id="hero-row" class="row">
             <div id="scriptedA4" class="col-lg-6 col-lg-offset-3">
               <p class="lead"><em>Scripted is designed to bridge the gap between CSS3 animations and cross browser compatible state changes. Rather than relying on keyframes in CSS, the Scripted library is used to create cuepoint actions on a timeline.</em></p>
-              <p><button type="button" class="btn btn-lg btn-block"><a href="https://github.com/thedatalife/scripted/blob/master/js/Scripted.js">Try it now.</a></button></p>
+              <div class="container"><a class="btn btn-primary btn-lg btn-block" href="https://github.com/thedatalife/scripted/blob/master/js/Scripted.js">Try it now.</a></div>
             </div>
           </div>
           <div id="content-row" class="row">
@@ -154,6 +182,7 @@ S.startTimer();
             <p>Copyright 2013 Miles Ryan</p>
           </footer>
         </div>
+        </div>
         <div id="tile-background" class="background">
           
         </div>
@@ -164,8 +193,16 @@ S.startTimer();
         <script type="text/javascript">
           var SA, SB, SC;
           $(document).ready(function(){
-
-            SA = new Scripted(60, 5);
+            
+            /* 
+              
+              Example 1: Using the loadScript method
+              
+              This example shows how to prepare a JSON script.
+              The script could easily be loaded in from an API.
+              
+            */
+            SA = new Scripted(60, 5); // 60fps, 5 seconds long, don't repeat
             scriptA = {
               "actions": [
                {  
@@ -194,12 +231,6 @@ S.startTimer();
                 ]
                },
                {  
-                "using": "#hero-row",
-                "at": [
-                  "180 addClass highlight"
-                ]
-               },
-               {  
                 "using": "#content-row",
                 "at": [
                   "180 addClass show"
@@ -209,8 +240,70 @@ S.startTimer();
             };
             SA.loadScript(scriptA);
 
-            SA.startTimer();  
+            SA.startTimer();
+            
+            /*
+            
+              Example 2: using the .every() method with a function
+             
+            */
+           
+            BGTiles.init();
+            SB = new Scripted(60, 3, true); // 30fps, 10 seconds, repeating
+            SB.using(BGTiles).every("60 callFunction randomizeTiles").startTimer();
+            
+            
           });
+          
+          var BGTiles = {
+            init: function() {
+              this.$bg = $("#tile-background");
+              
+              var size = 80,
+                width = $(window).width(),
+                height = $(document).height(),
+                columns = Math.floor(width / size),
+                rows = Math.floor(height / size),
+                x = 0,
+                y = 0;
+                
+              var square = function(width, height, x, y) {
+                var s = $("<div class='square'></div>");
+                s.css({
+                  "width": width,
+                  "height": height,
+                  "top": y,
+                  "left": x,
+                  "position": "absolute"
+                });
+                console.log("new square");
+                return s;
+              }
+                
+              for(var r = 0; r <= rows; r++) {
+                for(var c = 0; c <= columns; c++) {
+                  this.$bg.append(new square(size, size, c * size, r * size));
+                }
+              }
+              console.log(columns, rows);
+            },
+            randomizeTiles: function(currentTime) {
+              var tileCount = $(".square").length,
+                randomTileCount = Math.floor(Math.random() * 10),
+                randomIndex = 0,
+                $square = null;
+                
+              for(var i = 0; i < randomTileCount; i++) {
+                randomIndex = Math.floor(Math.random() * tileCount);
+                $square = $(".square").eq(randomIndex);
+                if($square.hasClass("show")){
+                  $square.removeClass("show");
+                } else {
+                  $square.addClass("show");
+                }
+              }
+            }
+          }
           
         </script>
     </body>

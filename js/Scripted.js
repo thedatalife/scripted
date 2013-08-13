@@ -125,7 +125,9 @@
        return this;
      },
      every: function(script) {
-       // todo: figure out how to have repeating events
+       this.parseEveryScript(script);
+       
+       return this;
      },
      loadScript: function(jsonScript) {
        this.parseJsonScript(jsonScript);
@@ -212,10 +214,24 @@
         methods[action](scope, value, currentFrame);
       });
      },
-     
+     parseEveryScript: function(script) {
+       var scriptArray = script.split(" ");
+       
+       var time = Number(scriptArray[0]),
+        action = scriptArray[1],
+        value = scriptArray[2],
+        actionTime = time,
+        totalActions = this.totalTimeInFrames / time;
+       
+       // add x number of actions based on the frequency
+       for(var i = 0; i < totalActions; i++) {
+         this.at(actionTime + " " + action + " " + value);
+         actionTime += time;
+       }
+     },
      parseJsonScript: function(script) {
        /*
-       // this is the format to use for the json script, options are not necessary
+       // this is the format to use for the json script, options are not necessary if already set in the constructor
          {
            "options": {"fps": 60, "length": 10, "shouldRepeat": true},
            "actions": [
