@@ -10,13 +10,13 @@
   Usage:
   Scripted uses a constructor so multiple instances can exist in a single page.
   
-  var s1 = new Scripted({fps:18});
-  s1.using('#test')
-    .at('60 addClass show')
-    .at('120 removeClass hide');
+  var scripted = new Scripted(60, 4, true); // 60fps, 4 seconds, repeating
+  scripted.using('#test')
+    .at('1 addClass show')
+    .at('2 removeClass hide');
     
-  s1.using(MyClass) // scope can be a selector or an object
-    .at('60 callFunction myFunction');
+  scripted.using(MyClass) // scope can be a selector or an object
+    .at('1 callFunction myFunction');
   
   http://am13.com/scripted
   https://github.com/thedatalife/scripted
