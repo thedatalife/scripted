@@ -27,7 +27,8 @@
   */
    var Scripted = function() {
      
-     $.extend(this, Scripted.properties);
+     $.extend(true, this, Scripted.properties);
+     this.actions = {};
      
      // it is optional to pass arguments in the constructor (fps, totalTimeInSeconds, shouldRepeat)
      // only skip if you are using the setupTimer method
@@ -61,7 +62,7 @@
      loopCounter: 0,
      currentTime: 0,
      currentFrame: 0,
-     actions: {}
+     actions: null
    };
    
    // the action methods are used by the cuepoint functions.
@@ -197,8 +198,8 @@
      parseScript: function(script) {
                     
       var scriptArray = script.split(" ");
-      
-      var timeKey = "frame"+scriptArray[0],
+
+      var timeKey = "frame"+Math.round(Number(scriptArray[0]) * this.fps),
           action = scriptArray[1],
           value = scriptArray[2],
           scope = this.scope;
@@ -222,9 +223,9 @@
         value = scriptArray[2],
         actionTime = time,
         totalActions = this.totalTimeInFrames / time;
-       
+              
        // add x number of actions based on the frequency
-       for(var i = 0; i < totalActions; i++) {
+       for(var i = 0; i <= totalActions; i++) {
          this.at(actionTime + " " + action + " " + value);
          actionTime += time;
        }
@@ -246,7 +247,6 @@
          }
        */
       if(script.hasOwnProperty("options")) {
-          console.log(script.options);
          this.setupTimer(script.options.fps, script.options.totalTimeInSeconds, script.options.shouldRepeat);
        }
        

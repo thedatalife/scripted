@@ -48,15 +48,18 @@
           
           #scriptedA4 {
             opacity: 0;
+            position: relative;
+            left: -100%;
             
-            -webkit-transition: all 1s ease-in-out;
-            -moz-transition: all 1s ease-in-out;
-            -o-transition: all 1s ease-in-out;
-            transition: all 1s ease-in-out;
+            -webkit-transition: all 2s ease-in-out;
+            -moz-transition: all 2s ease-in-out;
+            -o-transition: all 2s ease-in-out;
+            transition: all 2s ease-in-out;
           }
           
           #scriptedA4.show {
             opacity: 1;
+            left: 0;
           }
           
           #content-row {
@@ -92,6 +95,33 @@
           #tile-background .square.show {
             background-color: #EFEFEF;
           }
+          
+          #transforming-squares {
+            position: relative;
+            z-index: 150;
+            width: 100%;
+          }
+          
+          #transforming-squares div {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            background-color: #DEDEDE;
+            top: 40px;
+            
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: all 1s ease-in-out;
+          }
+          
+          #transforming-squares #squareA {
+            left: 10%;
+          }
+          
+          #transforming-squares #squareB {
+            right: 10%;
+          }
         </style>
     </head>
     
@@ -116,6 +146,10 @@
               <p>Easy syntax, plenty of options. Multiple Scripted timelines can be used at once.</p>
             </div>
           </div>
+            <div class="row" id="transforming-squares">
+              <div id="squareA"></div>
+              <div id="squareB"></div>
+            </div>
           <div id="hero-row" class="row">
             <div id="scriptedA4" class="col-lg-6 col-lg-offset-3">
               <p class="lead"><em>Scripted is designed to bridge the gap between CSS3 animations and cross browser compatible state changes. Rather than relying on keyframes in CSS, the Scripted library is used to create cuepoint actions on a timeline.</em></p>
@@ -209,32 +243,32 @@ S.startTimer();
                {  
                 "using": "#scriptedA1",
                 "at": [
-                  "60 addClass show",
-                  "180 addClass highlight",
+                  "1 addClass show",
+                  "3 addClass highlight",
                 ]
                },
                {  
                 "using": "#scriptedA2",
                 "at": [
-                  "120 addClass show"
+                  "2 addClass show"
                 ]
                },
                {  
                 "using": "#scriptedA3",
                 "at": [
-                  "180 addClass show"
+                  "3 addClass show"
                 ]
                },
                {  
                 "using": "#scriptedA4",
                 "at": [
-                  "240 addClass show"
+                  "3 addClass show"
                 ]
                },
                {  
                 "using": "#content-row",
                 "at": [
-                  "180 addClass show"
+                  "3 addClass show"
                 ]
                }
               ]
@@ -250,8 +284,16 @@ S.startTimer();
             */
            
             BGTiles.init();
-            SB = new Scripted(60, 3, true); // 30fps, 10 seconds, repeating
-            SB.using(BGTiles).every("60 callFunction randomizeTiles").startTimer();
+            SB = new Scripted(60, 3, true); // 60fps, 3 seconds, repeating
+            SB.using(BGTiles).every("1 callFunction randomizeTiles").startTimer();
+            
+            /*
+            
+              Example 3: using the simple API
+             
+            */
+           
+            SC = new Scripted(60, 10, true); // 60fps, 10 seconds, repeating
             
             
           });
@@ -294,7 +336,8 @@ S.startTimer();
               }
               console.log(columns, rows);
             },
-            randomizeTiles: function(currentTime) {
+            randomizeTiles: function() {
+              console.log("RANDOMIZE TILES");
               var tileCount = $(".square").length,
                 randomTileCount = Math.floor(Math.random() * 10),
                 randomIndex = 0,
