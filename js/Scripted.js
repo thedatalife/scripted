@@ -26,15 +26,15 @@
   
   */
    var Scripted = function() {
-     
+     'use strict';
+       
      $.extend(true, this, Scripted.properties);
      this.actions = {};
      
      // it is optional to pass arguments in the constructor (fps, totalTimeInSeconds, shouldRepeat)
      // only skip if you are using the setupTimer method
      // or passing options in through the loadScript method
-     if(typeof arguments[0] !== "undefined" 
-        && typeof arguments[1] !== "undefined") {
+     if(typeof arguments[0] !== "undefined" && typeof arguments[1] !== "undefined") {
 
        var fps = arguments[0], 
          totalTimeInSeconds = arguments[1], 
@@ -47,7 +47,7 @@
          
        this.setupTimer(fps, totalTimeInSeconds, shouldRepeat);
      }     
-   }
+   };
    
    // default properties, don't change these
    Scripted.properties = {
@@ -196,24 +196,27 @@
      
      */
      parseScript: function(script) {
-                    
-      var scriptArray = script.split(" ");
-
-      var timeKey = "frame"+Math.round(Number(scriptArray[0]) * this.fps),
-          action = scriptArray[1],
-          value = scriptArray[2],
-          scope = this.scope;
-      
-      // check if an array exists at this key, otherwise, create it
-      if(!this.actions.hasOwnProperty(timeKey)) {
-        this.actions[timeKey] = [];
+      try {
+        var scriptArray = script.split(" ");
+  
+        var timeKey = "frame"+Math.round(Number(scriptArray[0]) * this.fps),
+            action = scriptArray[1],
+            value = scriptArray[2],
+            scope = this.scope;
+        
+        // check if an array exists at this key, otherwise, create it
+        if(!this.actions.hasOwnProperty(timeKey)) {
+          this.actions[timeKey] = [];
+        }
+        
+        // create a simple anonmyous function that will be passed functionality when called
+        this.actions[timeKey].push(function(methods, currentFrame) {
+          // the methods variable will contain the Scripted.actionMethods set of methods
+          methods[action](scope, value, currentFrame);
+        });
+      } catch(e) {
+        // could not parse script
       }
-      
-      // create a simple anonmyous function that will be passed functionality when called
-      this.actions[timeKey].push(function(methods, currentFrame) {
-        // the methods variable will contain the Scripted.actionMethods set of methods
-        methods[action](scope, value, currentFrame);
-      });
      },
      parseEveryScript: function(script) {
        var scriptArray = script.split(" ");
@@ -252,6 +255,7 @@
        
        var actionCount = script.actions.length,
         i = 0,
+        a = 0,
         action = null;
        
        for(i = 0; i < actionCount; i++) {
@@ -273,6 +277,9 @@
 // MIT license
  
 (function() {
+    // https://gist.github.com/eliperelman/1035932
+    Date.now ||(Date.now = function(){ return +new Date })
+    
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
